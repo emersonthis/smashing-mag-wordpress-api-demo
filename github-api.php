@@ -62,66 +62,67 @@ function gh_plugin_menu_func() {
 
 // Print the markup for the page
 function gh_plugin_options() {
+
     if ( !current_user_can( "manage_options" ) )  {
         wp_die( __( "You do not have sufficient permissions to access this page." ) );
     }
 
-if ( isset($_GET['status']) && $_GET['status']=='success') { 
-?>
-    <div id="message" class="updated notice is-dismissible">
-        <p><?php _e("Settings updated!", "github-api"); ?></p>
-        <button type="button" class="notice-dismiss">
-            <span class="screen-reader-text"><?php _e("Dismiss this notice.", "github-api"); ?></span>
-        </button>
-    </div>
-<?php
-}
-?>
-<form method="post" action="<?php echo admin_url( 'admin-post.php'); ?>">
+    if ( isset($_GET['status']) && $_GET['status']=='success') { 
+    ?>
+        <div id="message" class="updated notice is-dismissible">
+            <p><?php _e("Settings updated!", "github-api"); ?></p>
+            <button type="button" class="notice-dismiss">
+                <span class="screen-reader-text"><?php _e("Dismiss this notice.", "github-api"); ?></span>
+            </button>
+        </div>
+    <?php
+    }
 
-    <input type="hidden" name="action" value="update_github_settings" />
+    ?>
+    <form method="post" action="<?php echo admin_url( 'admin-post.php'); ?>">
 
-    <h3><?php _e("Github Repository Info", "github-api"); ?></h3>
-    <p>
-    <label><?php _e("Github Organization:", "github-api"); ?></label>
-    <input class="" type="text" name="gh_org" value="<?php echo get_option('gh_org'); ?>" />
-    </p>
+        <input type="hidden" name="action" value="update_github_settings" />
 
-    <p>
-    <label><?php _e("Github repository (slug):", "github-api"); ?></label>
-    <input class="" type="text" name="gh_repo" value="<?php echo get_option('gh_repo'); ?>" />
-    </p>
+        <h3><?php _e("Github Repository Info", "github-api"); ?></h3>
+        <p>
+        <label><?php _e("Github Organization:", "github-api"); ?></label>
+        <input class="" type="text" name="gh_org" value="<?php echo get_option('gh_org'); ?>" />
+        </p>
 
-    <input class="button button-primary" type="submit" value="<?php _e("Save", "github-api"); ?>" />
+        <p>
+        <label><?php _e("Github repository (slug):", "github-api"); ?></label>
+        <input class="" type="text" name="gh_repo" value="<?php echo get_option('gh_repo'); ?>" />
+        </p>
 
-</form>
+        <input class="button button-primary" type="submit" value="<?php _e("Save", "github-api"); ?>" />
 
-<form method="post" action="<?php echo admin_url( 'admin-post.php'); ?>">
+    </form>
 
-    <input type="hidden" name="action" value="oauth_submit" />
-    
-    <h3>Oauth 2.0</h3>
+    <form method="post" action="<?php echo admin_url( 'admin-post.php'); ?>">
 
-    <p>
-        <label><?php _e("Github Application Client ID:", "github-api"); ?></label>
-        <input class="" type="text" name="client_id" value="<?php echo get_option('client_id')?>" />
-    </p>
-    <p>
-        <label><?php _e("Github Application Client Secret:", "github-api"); ?></label>
-        <input class="" type="password" name="client_secret" value="<?php echo get_option('client_secret')?>" />
-    </p>
+        <input type="hidden" name="action" value="oauth_submit" />
         
+        <h3>Oauth 2.0</h3>
 
-    <input class="button button-primary" type="submit" value="<?php _e("Authorize", "github-api"); ?>" />
+        <p>
+            <label><?php _e("Github Application Client ID:", "github-api"); ?></label>
+            <input class="" type="text" name="client_id" value="<?php echo get_option('client_id')?>" />
+        </p>
+        <p>
+            <label><?php _e("Github Application Client Secret:", "github-api"); ?></label>
+            <input class="" type="password" name="client_secret" value="<?php echo get_option('client_secret')?>" />
+        </p>
+            
 
-</form>
+        <input class="button button-primary" type="submit" value="<?php _e("Authorize", "github-api"); ?>" />
+
+    </form>
 
 <?php
 
 }
 
 add_action( 'admin_post_oauth_submit', 'handle_oauth' );
-
 
 function handle_oauth() {
 
@@ -140,7 +141,7 @@ function handle_oauth() {
     $client_id = get_option("client_id");
     $client_secret = get_option("client_secret");
 
-    if ($client_id && $client_secret)   
+    if ($client_id && $client_secret)
     {
         $provider = new League\OAuth2\Client\Provider\Github([
             "clientId"          =>  $client_id,
@@ -148,7 +149,7 @@ function handle_oauth() {
             "redirectUri"       => admin_url("options-general.php?page=github"),
         ]);
 
-    }   
+    }
 
     // If this is a form submission start the workflow...
     // (Step 2)
